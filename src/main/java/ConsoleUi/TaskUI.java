@@ -8,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import Entities.Task;
+import Entities.User;
 import DB.TaskDB;
+import DB.UserDB;
 import Utils.Util;
 import Utils.Util.TaskListSortColumns;
 import TaskManager.TaskManager;
@@ -61,8 +63,12 @@ public class TaskUI extends BaseUI {
         String taskName;
         String taskBody;
         String taskStatus = "not_completed";
+        String input;
         LocalDateTime createDate = LocalDateTime.now();
         LocalDate deadline = null; // Ставим NULL чтобы запустить цикл по валидации ввода дедлайна
+        User creator = null;
+        User executor;
+        ResultSet rs;
 
         System.out.println("Добавление задачи \n -----------------");
         System.out.println("Введите название задачи:");
@@ -91,7 +97,36 @@ public class TaskUI extends BaseUI {
 
         deadline = enterDeadline();
 
-        Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline);
+        System.out.println("Введите исполнителя:");
+
+        while (true) {
+            input= scanner.nextLine();
+            if (taskBody.equals("")) {
+                System.out.println("Поле не может быть пустым");
+            } else {
+                try {
+                   rs = UserDB.getOneFull(input);
+                   if (rs.next()) {
+                    executor = new User(rs.getInt("id"), rs.getString("nickname"));
+                    break;
+                   } 
+                } catch (Exception e) {
+                    System.out.println("Такого пользователя не существует.");
+                }                
+            }
+        }
+
+        // Захардкожен создатель
+        try {
+            rs = UserDB.getOneFull("Kos");
+            if (rs.next()) {
+             creator = new User(rs.getInt("id"), rs.getString("nickname"));
+            } 
+         } catch (Exception e) {
+             System.out.println("Такого пользователя не существует.");
+         } 
+
+        Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, creator, executor);
         boolean answer = TaskDB.add(newTask); // Вызываем сатичный метод добавления задачи
 
         if (answer) {
@@ -199,7 +234,7 @@ public class TaskUI extends BaseUI {
                 task = new Task(rs.getInt("id"), rs.getString("name"),
                         rs.getString("body"), rs.getString("status"),
                         LocalDateTime.parse(rs.getTimestamp("created_at").toString(), Util.formatterToLocalDateTime),
-                        LocalDate.parse(rs.getDate("deadline").toString()));
+                        LocalDate.parse(rs.getDate("deadline").toString()), rs.getObject("creator_id"), rs.getObject("executor_id"));
 
                 System.out.println(task.toString());
                 menu(task);
