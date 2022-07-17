@@ -23,8 +23,15 @@ public class Task extends Base {
         this.deadLine = deadline;
     }
 
+    // Конструктор для вывода задач кратким список
+    public Task(int id, String name, String status, LocalDate deadline, User executor) {
+        this(name, status, deadline);
+        this.id = id;
+        this.executor = executor;
+    }
+
     // Конструктор для добавления задачи в базу
-    public Task(String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User creator,  User executor) {
+    public Task(String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User creator, User executor) {
         this(name, status, deadline);
         this.body = body;
         this.createDate = createDate;
@@ -33,59 +40,67 @@ public class Task extends Base {
     }
 
     // Конструктор для всех полей задачи
-    public Task(int id, String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User creator,  User executor) {
+    public Task(int id, String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User creator, User executor) {
         this(name, body, status, createDate, deadline, creator, executor);
         this.id = id;
     }
 
-    // Конструктор для вывода задач кратким список
-    public Task(int id, String name, String status, LocalDate deadline, User executor) {
-        this(name, status, deadline);
-        this.id = id;
-        this.executor = executor;
-    }
-
-
-
     public int getId() {
         return this.id;
     }
+
     public String getName() {
         return this.name;
     }
+
     public String getBody() {
         return this.body;
     }
+
     public String getStatus() {
         return this.status;
     }
+
     public LocalDateTime getCreateDate() {
         return this.createDate;
     }
+
     public LocalDate getDeadLine() {
         return this.deadLine;
     }
+
     public String getCreator() {
         return this.creator.getNickname();
     }
+
     public String getExecutor() {
         return this.executor.getNickname();
-    }    
+    } 
+
     public int getCreatorId() {
         return this.creator.getId();
     }
+
     public int getExecutorId() {
         return this.executor.getId();
     }
 
-    public void setName(String name) {this.name = name;}
-    public void setBody(String body) {this.body = body;}
-    public void setDeadline(LocalDate deadline) {this.deadLine = deadline;}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadLine = deadline;
+    }
 
     @Override
     public String toString() {
-        String executorNickname = (executor != null)?getExecutor():"Не назначен";
-        String creatorNickname = (creator != null)?getCreator():"Не назначен";
+        String executorNickname = (executor != null) ? getExecutor() : "Не назначен";
+        String creatorNickname = (creator != null) ? getCreator() : "Не назначен";
 
         return "ID задачи: " + id +
                 "\nНазвание: " + name +
@@ -98,7 +113,7 @@ public class Task extends Base {
     }
 
     public String showShortTask() {
-        String executorNickname = (executor != null)?getExecutor():"Не назначен";
+        String executorNickname = (executor != null) ? getExecutor() : "Не назначен";
 
         return "ID задачи: " + id + "\nНазвание: " + name +
                 "; Завершить до: " + deadLine.format(formatter) +
@@ -107,6 +122,6 @@ public class Task extends Base {
     }
 
     String translateStatus() {
-        return (this.status.equals("completed"))?"Завершена":"В работе";
+        return (this.status.equals("completed")) ? "Завершена" : "В работе";
     }
 }

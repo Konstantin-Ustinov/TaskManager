@@ -68,7 +68,7 @@ public class TaskUI extends BaseUI {
         LocalDateTime createDate = LocalDateTime.now();
         LocalDate deadline = null; // Ставим NULL чтобы запустить цикл по валидации ввода дедлайна
         User creator = null;
-        User executor;
+        User executor = null;
         ResultSet rs;
 
         System.out.println("Добавление задачи \n -----------------");
