@@ -39,9 +39,10 @@ public class Task extends Base {
     }
 
     // Конструктор для вывода задач кратким список
-    public Task(int id, String name, String status, LocalDate deadline) {
+    public Task(int id, String name, String status, LocalDate deadline, User executor) {
         this(name, status, deadline);
         this.id = id;
+        this.executor = executor;
     }
 
 
@@ -69,6 +70,12 @@ public class Task extends Base {
     }
     public String getExecutor() {
         return this.executor.getNickname();
+    }    
+    public int getCreatorId() {
+        return this.creator.getId();
+    }
+    public int getExecutorId() {
+        return this.executor.getId();
     }
 
     public void setName(String name) {this.name = name;}
@@ -77,21 +84,26 @@ public class Task extends Base {
 
     @Override
     public String toString() {
+        String executorNickname = (executor != null)?getExecutor():"Не назначен";
+        String creatorNickname = (creator != null)?getCreator():"Не назначен";
+
         return "ID задачи: " + id +
                 "\nНазвание: " + name +
                 "\nОписание: " + body +
                 "\nДата создания: " + createDate.atZone(ZoneId.systemDefault()).format(formatter) +
                 "\nЗавершить до: " + deadLine.format(formatter) +
                 "\nСтатус: " + translateStatus() +
-                "\nСоздатель: " + getCreator() + 
-                "\nИсполнитель: " + getExecutor();
+                "\nСоздатель: " + creatorNickname + 
+                "\nИсполнитель: " + executorNickname;
     }
 
     public String showShortTask() {
+        String executorNickname = (executor != null)?getExecutor():"Не назначен";
+
         return "ID задачи: " + id + "\nНазвание: " + name +
                 "; Завершить до: " + deadLine.format(formatter) +
                 "; Статус: " + translateStatus() + 
-                "; Исполнитель: " + getExecutor();
+                "; Исполнитель: " + executorNickname;
     }
 
     String translateStatus() {

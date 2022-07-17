@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 //import net.java.dev.inflector.*;
 import org.javalite.common.*;
 
-import static DB.ServiseDB.*;
+import static DB.ServiceDB.*;
 import Entities.*;
 
 public class BaseDB {

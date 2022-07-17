@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import Entities.User;
-import static DB.ServiseDB.*;
+import static DB.ServiceDB.*;
 
 public class UserDB extends BaseDB {
     public static boolean add(User newUser) {
@@ -80,7 +80,26 @@ public class UserDB extends BaseDB {
     public static ResultSet getOneFull(String nickname) {      
         DBConnect();
 
-        String sql = "SELECT \"id\", \"nickname\" FROM public.\"users\" WHERE \"nickname\"=" + nickname;
+        String sql = "SELECT \"id\", \"nickname\" FROM public.\"users\" WHERE \"nickname\"= '" + nickname + "'";
+        Statement stmt;
+        ResultSet rs = null;
+
+        try {
+             stmt = connection.createStatement();
+             rs = stmt.executeQuery(sql);
+         } catch (SQLException e) {
+             System.out.println("Не удалось загрузить пользователя.");
+         }
+
+        DBDisconnect();
+        return rs;
+    }
+    
+    // Перегрузка метода
+    public static ResultSet getOneFull(int id) {      
+        DBConnect();
+
+        String sql = "SELECT \"id\", \"nickname\" FROM public.\"users\" WHERE \"id\"=" + id;
         Statement stmt;
         ResultSet rs = null;
 

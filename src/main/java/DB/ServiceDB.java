@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ServiseDB {
+public class ServiceDB {
     private final static String DB_URL = "jdbc:postgresql://localhost:5432/TaskManager";
     private final static String USER = "postgres";
     private final static String PASSWORD = "0123";

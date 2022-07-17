@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import Entities.Task;
 import Entities.User;
+import Services.TaskService;
 import DB.TaskDB;
 import DB.UserDB;
 import Utils.Util;
@@ -159,6 +160,7 @@ public class TaskUI extends BaseUI {
 
     public static void showAll(TaskListSortColumns sortIn) {
         String listName = "";
+        User executor = null;
 
         switch (sortIn) {
             case DEADLINE -> {
@@ -193,9 +195,10 @@ public class TaskUI extends BaseUI {
                     if (!rs.next()) {
                         break;
                     }
-                 // Пока есть записи выводим их
+                 // Пока есть записи создаем объеты в цикле
+                    executor = TaskService.getUser(rs.getInt("executor_id"));
                     tasks.add(new Task(rs.getInt("id"), rs.getString("name"),
-                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString())));
+                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), executor));
                 } catch (SQLException e) {
                     showMessage("При выбранной сортировке задач нет.");
                  }
@@ -214,6 +217,7 @@ public class TaskUI extends BaseUI {
 
     public static void showOneFull(int taskId) {
         int id;
+        Task task = null;
 
         if (taskId == -1) {
             id = enterId();
@@ -221,27 +225,10 @@ public class TaskUI extends BaseUI {
             id = taskId;
         }
 
-        // создаем объет ResultSet и инициализируем его ответом из метода
-        ResultSet rs = TaskDB.getOneFull(id);
-        Task task = null; // Создаем объект
+        task = TaskService.getOneFull(id);
 
-        try {
-            if (!rs.next()) {
-                showMessage("Не удалось загрузить задачу. Убедитесь в правильности введенного ID.");
-                showOneFull(-1);
-            } else {
-                // Инициализируем объект
-                task = new Task(rs.getInt("id"), rs.getString("name"),
-                        rs.getString("body"), rs.getString("status"),
-                        LocalDateTime.parse(rs.getTimestamp("created_at").toString(), Util.formatterToLocalDateTime),
-                        LocalDate.parse(rs.getDate("deadline").toString()), rs.getObject("creator_id"), rs.getObject("executor_id"));
-
-                System.out.println(task.toString());
-                menu(task);
-            }
-        } catch (SQLException e) {
-            System.out.println("Объект task не создан.");
-        }
+        System.out.println(task.toString());
+        menu(task);
     }
 
     public static void setStatus(Task task) {
