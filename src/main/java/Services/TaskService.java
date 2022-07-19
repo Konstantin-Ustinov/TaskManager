@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import ConsoleUI.UI.TaskUI;
 import DB.TaskDB;
 import DB.UserDB;
 import Entities.Task;
 import Entities.User;
 import Utils.Util;
-import ConsoleUi.TaskUI;
 
 public class TaskService {
 
