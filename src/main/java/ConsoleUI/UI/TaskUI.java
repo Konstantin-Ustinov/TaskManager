@@ -69,8 +69,8 @@ public class TaskUI extends BaseUI {
         String input;
         LocalDateTime createDate = LocalDateTime.now();
         LocalDate deadline = null; // Ставим NULL чтобы запустить цикл по валидации ввода дедлайна
-        User creator = null;
-        User executor = null;
+        User autor = null;
+        User performer = null;
         ResultSet rs;
 
         System.out.println("Добавление задачи \n -----------------");
@@ -110,7 +110,7 @@ public class TaskUI extends BaseUI {
                 try {
                    rs = UserDB.getOneFull(input);
                    if (rs.next()) {
-                    executor = new User(rs.getInt("id"), rs.getString("nickname"));
+                    performer = new User(rs.getInt("id"), rs.getString("nickname"));
                     break;
                    } 
                 } catch (Exception e) {
@@ -123,13 +123,13 @@ public class TaskUI extends BaseUI {
         try {
             rs = UserDB.getOneFull("Kos");
             if (rs.next()) {
-             creator = new User(rs.getInt("id"), rs.getString("nickname"));
+             autor = new User(rs.getInt("id"), rs.getString("nickname"));
             } 
          } catch (Exception e) {
              System.out.println("Такого пользователя не существует.");
          } 
 
-        Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, creator, executor);
+        Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, autor, performer);
         boolean answer = TaskDB.add(newTask); // Вызываем сатичный метод добавления задачи
 
         if (answer) {
@@ -162,7 +162,7 @@ public class TaskUI extends BaseUI {
 
     public static void showAll(TaskListSortColumns sortIn) {
         String listName = "";
-        User executor = null;
+        User performer = null;
 
         switch (sortIn) {
             case DEADLINE -> {
@@ -198,9 +198,9 @@ public class TaskUI extends BaseUI {
                         break;
                     }
                  // Пока есть записи создаем объеты в цикле
-                    executor = TaskService.getUser(rs.getInt("executor_id"));
+                    performer = TaskService.getUser(rs.getInt("performer_id"));
                     tasks.add(new Task(rs.getInt("id"), rs.getString("name"),
-                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), executor));
+                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), performer));
                 } catch (SQLException e) {
                     showMessage("При выбранной сортировке задач нет.");
                  }

@@ -142,7 +142,7 @@ public class UserUI extends BaseUI {
     public static String enterNickname() {
         String nickname;
         //Scanner scan = new Scanner(System.in);
-        scanner.nextLine(); // Очищаем поток ввода
+        //scanner.nextLine(); // Очищаем поток ввода
         while (true) {
             System.out.println("Введите nickname:");
             nickname = scanner.nextLine();

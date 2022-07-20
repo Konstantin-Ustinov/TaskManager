@@ -13,8 +13,8 @@ public class Task extends Base {
     private String status;
     private LocalDateTime createDate;
     private LocalDate deadLine;
-    private User creator;
-    private User executor;
+    private User autor;
+    private User performer;
 
     // Базовый конструктор
     public Task(String name, String status, LocalDate deadline) {
@@ -24,24 +24,24 @@ public class Task extends Base {
     }
 
     // Конструктор для вывода задач кратким список
-    public Task(int id, String name, String status, LocalDate deadline, User executor) {
+    public Task(int id, String name, String status, LocalDate deadline, User performer) {
         this(name, status, deadline);
         this.id = id;
-        this.executor = executor;
+        this.performer = performer;
     }
 
     // Конструктор для добавления задачи в базу
-    public Task(String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User creator, User executor) {
+    public Task(String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User autor, User performer) {
         this(name, status, deadline);
         this.body = body;
         this.createDate = createDate;
-        this.creator = creator;
-        this.executor = executor;
+        this.autor = autor;
+        this.performer = performer;
     }
 
     // Конструктор для всех полей задачи
-    public Task(int id, String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User creator, User executor) {
-        this(name, body, status, createDate, deadline, creator, executor);
+    public Task(int id, String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User autor, User performer) {
+        this(name, body, status, createDate, deadline, autor, performer);
         this.id = id;
     }
 
@@ -69,20 +69,20 @@ public class Task extends Base {
         return this.deadLine;
     }
 
-    public String getCreator() {
-        return this.creator.getNickname();
+    public String getAutorNickname() {
+        return this.autor.getNickname();
     }
 
-    public String getExecutor() {
-        return this.executor.getNickname();
+    public String getPerformerNickname() {
+        return this.performer.getNickname();
     } 
 
-    public int getCreatorId() {
-        return this.creator.getId();
+    public int getAutorId() {
+        return this.autor.getId();
     }
 
-    public int getExecutorId() {
-        return this.executor.getId();
+    public int getPerformerId() {
+        return this.performer.getId();
     }
 
     public void setName(String name) {
@@ -99,8 +99,8 @@ public class Task extends Base {
 
     @Override
     public String toString() {
-        String executorNickname = (executor != null) ? getExecutor() : "Не назначен";
-        String creatorNickname = (creator != null) ? getCreator() : "Не назначен";
+        String performerNickname = (performer != null) ? getPerformerNickname() : "Не назначен";
+        String autorNickname = (autor != null) ? getAutorNickname() : "Не назначен";
 
         return "ID задачи: " + id +
                 "\nНазвание: " + name +
@@ -108,17 +108,17 @@ public class Task extends Base {
                 "\nДата создания: " + createDate.atZone(ZoneId.systemDefault()).format(formatter) +
                 "\nЗавершить до: " + deadLine.format(formatter) +
                 "\nСтатус: " + translateStatus() +
-                "\nСоздатель: " + creatorNickname + 
-                "\nИсполнитель: " + executorNickname;
+                "\nСоздатель: " + autorNickname + 
+                "\nИсполнитель: " + performerNickname;
     }
 
     public String showShortTask() {
-        String executorNickname = (executor != null) ? getExecutor() : "Не назначен";
+        String performerNickname = (performer != null) ? getPerformerNickname() : "Не назначен";
 
         return "ID задачи: " + id + "\nНазвание: " + name +
                 "; Завершить до: " + deadLine.format(formatter) +
                 "; Статус: " + translateStatus() + 
-                "; Исполнитель: " + executorNickname;
+                "; Исполнитель: " + performerNickname;
     }
 
     String translateStatus() {

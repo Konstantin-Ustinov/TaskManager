@@ -15,7 +15,7 @@ import Utils.Util;
 public class TaskService {
 
     public static Task getOneFull(int id) {        
-        User creator, executor = null;
+        User autor, performer = null;
 
         // создаем объет ResultSet и инициализируем его ответом из метода
         ResultSet rs = TaskDB.getOneFull(id);
@@ -26,12 +26,12 @@ public class TaskService {
                 TaskUI.showMessage("Не удалось загрузить задачу. Убедитесь в правильности введенного ID.");
                 TaskUI.showOneFull(-1);
             } else {
-                creator = getUser(rs.getInt("creator_id"));
-                executor = getUser(rs.getInt("executor_id"));
+                autor = getUser(rs.getInt("autor_id"));
+                performer = getUser(rs.getInt("performer_id"));
                 task = new Task(rs.getInt("id"), rs.getString("name"),
                         rs.getString("body"), rs.getString("status"),
                         LocalDateTime.parse(rs.getTimestamp("created_at").toString(), Util.formatterToLocalDateTime),
-                        LocalDate.parse(rs.getDate("deadline").toString()), creator, executor);             
+                        LocalDate.parse(rs.getDate("deadline").toString()), autor, performer);             
             }
         } catch (SQLException e) {
             System.out.println("Объект task не создан.");

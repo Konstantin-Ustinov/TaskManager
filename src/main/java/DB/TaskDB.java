@@ -22,15 +22,15 @@ public class TaskDB extends BaseDB {
         PreparedStatement stmt;
             try { // пробуем отправить SQL запрос
                 stmt = connection.prepareStatement("INSERT INTO public.\"tasks\"(\"name\", \"body\", \"created_at\", \"updated_at\", \"deadline\", \"status\"," + 
-                        " \"executor_id\", \"creator_id\") VALUES(?, ?, ?, ?, ?, ?, ?, ?)"); // переменной присваиваем результат метода с запросом
+                        " \"performer_id\", \"autor_id\") VALUES(?, ?, ?, ?, ?, ?, ?, ?)"); // переменной присваиваем результат метода с запросом
                 stmt.setString(1, newTask.getName()); // подставляем значение переменной вместо первого знака вопроса
                 stmt.setString(2, newTask.getBody());
                 stmt.setTimestamp(3, Timestamp.valueOf(newTask.getCreateDate()));
                 stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
                 stmt.setDate(5, Date.valueOf(newTask.getDeadLine()));
                 stmt.setString(6, newTask.getStatus());
-                stmt.setInt(7, newTask.getExecutorId());
-                stmt.setInt(8, newTask.getCreatorId());
+                stmt.setInt(7, newTask.getPerformerId());
+                stmt.setInt(8, newTask.getAutorId());
                 stmt.execute(); // После того как весь запрос составлен, отправляем запрос в бвзу
                 return true;
             } catch (SQLException e) {
@@ -62,7 +62,7 @@ public class TaskDB extends BaseDB {
 
     public static ResultSet getAll(TaskListSortColumns sort) {
         ResultSet rs = null;
-        String sql = "SELECT \"id\", \"name\",  \"status\", \"deadline\", \"executor_id\" FROM public.\"tasks\"";
+        String sql = "SELECT \"id\", \"name\",  \"status\", \"deadline\", \"performer_id\" FROM public.\"tasks\"";
         switch (sort) {
             case DEADLINE -> sql += " WHERE \"deadline\" >= '" + Date.valueOf(LocalDate.now()) + "' ORDER BY \"deadline\", \"id\"";
             case CREATE -> sql += "WHERE \"deadline\" >= '" + Date.valueOf(LocalDate.now()) +  "' ORDER BY \"created_at\", \"id\"";
@@ -88,7 +88,7 @@ public class TaskDB extends BaseDB {
 
     public static ResultSet getOneFull(int taskId) {
         String sql = "SELECT \"id\", \"name\", \"body\", \"status\", \"created_at\","+
-                            " \"deadline\", \"executor_id\", \"creator_id\" FROM public.\"tasks\" WHERE \"id\"=" + taskId;
+                            " \"deadline\", \"performer_id\", \"autor_id\" FROM public.\"tasks\" WHERE \"id\"=" + taskId;
 
         DBConnect();
 
