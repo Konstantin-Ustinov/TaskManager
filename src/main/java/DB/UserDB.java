@@ -94,7 +94,6 @@ public class UserDB extends BaseDB {
         DBDisconnect();
         return rs;
     }
-    
     // Перегрузка метода
     public static ResultSet getOneFull(int id) {      
         DBConnect();
@@ -114,7 +113,7 @@ public class UserDB extends BaseDB {
         return rs;
     }
 
-    public static ResultSet showAll() {
+    public static ResultSet getAll() {
         DBConnect();
         
         String sql = "SELECT \"nickname\" FROM public.\"users\"";

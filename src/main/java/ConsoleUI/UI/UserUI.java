@@ -1,11 +1,9 @@
 package ConsoleUI.UI;
 
 import java.util.ArrayList;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import Entities.User;
-import DB.UserDB;
+import Services.UserService;
 
 public class UserUI extends BaseUI {
 
@@ -48,7 +46,7 @@ public class UserUI extends BaseUI {
         nickname = enterNickname();
 
         User newUser = new User(nickname);
-        boolean answer = UserDB.add(newUser); // Вызываем сатичный метод добавления пользователя
+        boolean answer = UserService.add(newUser); // Вызываем сатичный метод добавления пользователя
 
         if (answer) {
             message = "Пользователь успешно добавлен.";
@@ -67,7 +65,7 @@ public class UserUI extends BaseUI {
         System.out.println("1 - да; 2 - нет");
         input = scanner.next();
         if (input.equals("1")) {
-            if (UserDB.delete(nickname)) {
+            if (UserService.delete(nickname)) {
                 showMessage("Пользователь успешно удален.");
             } else {
                 showMessage("Не удалось удалить пользователя. Убедитесь в правильности введенного nickname.");
@@ -79,26 +77,14 @@ public class UserUI extends BaseUI {
     public static void update() {
         String nickname;         
         String newNickname;
-        User user = null;        
+                
 
         System.out.println("Изменение пользователя \n -----------------");
         System.out.println("Кому меняем nickname?");
         
         nickname = enterNickname();
 
-        ResultSet rs = UserDB.getOneFull(nickname);
-        
-        try {
-            if (!rs.next()) {
-                showMessage("Такого пользователя не существует. Убедитесь в правильности введенного nickname.");
-                update();
-            } else {
-                // Инициализируем объект
-                user = new User(rs.getInt(1), rs.getString(2));
-            }
-        } catch (SQLException e) {
-            System.out.println("Ошибка при создании объека. Попробуйте снова.");
-        }
+        User user = UserService.getUser(nickname);
         
         System.out.println("Новый nickname?");
         
@@ -106,7 +92,7 @@ public class UserUI extends BaseUI {
 
         user.setNickname(newNickname);
 
-        if (UserDB.update(user)) {
+        if (UserService.update(user)) {
             showMessage("Пользователь успешно изменен.");
         } else {
             showMessage("Не удалось изменить пользователя. Убедитесь в правильности введенного nickname.");
@@ -116,19 +102,8 @@ public class UserUI extends BaseUI {
     }
    
     public static void showAll() {
-        ArrayList<User> users = new ArrayList<>();
 
-        try {
-            ResultSet rs = UserDB.showAll();
-            if (!rs.next()) {
-                System.out.println("Пришел пустой ответ из базы.");
-            }
-            while (rs.next()) {
-                users.add(new User(rs.getString("nickname")));
-            }
-        } catch (Exception e) {
-            System.out.println("Ошибка метода к БД в UserUI");
-        }
+        ArrayList<User> users = UserService.getAll();
         
         int num = 1;
 

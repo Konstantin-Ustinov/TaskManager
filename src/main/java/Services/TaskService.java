@@ -10,7 +10,6 @@ import ConsoleUI.Main;
 import ConsoleUI.UI.BaseUI;
 import ConsoleUI.UI.TaskUI;
 import DB.TaskDB;
-import DB.UserDB;
 import Entities.Task;
 import Entities.User;
 import Utils.Util;
@@ -37,7 +36,7 @@ public class TaskService {
                         break;
                     }
                  // Пока есть записи создаем объеты в цикле
-                    User performer = TaskService.getUser(rs.getInt("performer_id"));
+                    User performer = UserService.getUser(rs.getInt("performer_id"));
                     tasks.add(new Task(rs.getInt("id"), rs.getString("name"),
                             rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), performer));
                 } catch (SQLException e) {
@@ -59,11 +58,11 @@ public class TaskService {
                 TaskUI.showMessage("Не удалось загрузить задачу. Убедитесь в правильности введенного ID.");
                 TaskUI.showOneFull(-1);
             } else {
-                autor = getUser(rs.getInt("autor_id"));
-                performer = getUser(rs.getInt("performer_id"));
-                task = new Task(rs.getInt("id"), rs.getString("name"),
+                autor = new User(rs.getInt("autorId"), rs.getString("autorNickname"));
+                performer = new User(rs.getInt("performerId"), rs.getString("performerNickname"));
+                task = new Task(rs.getInt("taskId"), rs.getString("name"),
                         rs.getString("body"), rs.getString("status"),
-                        LocalDateTime.parse(rs.getTimestamp("created_at").toString(), Util.formatterToLocalDateTime),
+                        LocalDateTime.parse(rs.getTimestamp("created").toString(), Util.formatterToLocalDateTime),
                         LocalDate.parse(rs.getDate("deadline").toString()), autor, performer);             
             }
         } catch (SQLException e) {
@@ -81,31 +80,4 @@ public class TaskService {
         return TaskDB.update(changedTask);
     }
 
-    public static User getUser(int id) {
-    User user = null;
-        try {
-            ResultSet rs = UserDB.getOneFull(id);
-            if (rs.next()) {
-               user = new User(rs.getInt("id"), rs.getString("nickname")); 
-            } 
-        } catch (Exception e) {
-            System.out.println("Объект User не создан.");
-        }
-
-        return user;
-    }
-    
-    public static User getUser(String nickname) {
-    User user = null;
-        try {
-            ResultSet rs = UserDB.getOneFull(nickname);
-            if (rs.next()) {
-               user = new User(rs.getInt("id"), rs.getString("nickname")); 
-            } 
-        } catch (Exception e) {
-            System.out.println("Объект User не создан.");
-        }
-
-        return user;
-    }
 }

@@ -9,6 +9,7 @@ import ConsoleUI.Main;
 import Entities.Task;
 import Entities.User;
 import Services.TaskService;
+import Services.UserService;
 import Utils.Util;
 import Utils.Util.TaskListSortColumns;
 
@@ -100,13 +101,13 @@ public class TaskUI extends BaseUI {
             if (taskBody.equals("")) {
                 System.out.println("Поле не может быть пустым");
             } else {                
-                performer = TaskService.getUser(input);
+                performer = UserService.getUser(input);
                 break;     
             }
         }
 
         // Захардкожен создатель
-        performer = TaskService.getUser(input);
+        performer = UserService.getUser(input);
 
         Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, autor, performer);
         boolean answer = TaskService.add(newTask); // Вызываем сатичный метод добавления задачи
