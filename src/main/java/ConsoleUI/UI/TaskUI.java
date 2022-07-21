@@ -6,15 +6,9 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 import ConsoleUI.Main;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import Entities.Task;
 import Entities.User;
 import Services.TaskService;
-import DB.TaskDB;
-import DB.UserDB;
 import Utils.Util;
 import Utils.Util.TaskListSortColumns;
 
@@ -71,7 +65,6 @@ public class TaskUI extends BaseUI {
         LocalDate deadline = null; // Ставим NULL чтобы запустить цикл по валидации ввода дедлайна
         User autor = null;
         User performer = null;
-        ResultSet rs;
 
         System.out.println("Добавление задачи \n -----------------");
         System.out.println("Введите название задачи:");
@@ -106,31 +99,17 @@ public class TaskUI extends BaseUI {
             input= scanner.nextLine();
             if (taskBody.equals("")) {
                 System.out.println("Поле не может быть пустым");
-            } else {
-                try {
-                   rs = UserDB.getOneFull(input);
-                   if (rs.next()) {
-                    performer = new User(rs.getInt("id"), rs.getString("nickname"));
-                    break;
-                   } 
-                } catch (Exception e) {
-                    System.out.println("Такого пользователя не существует.");
-                }                
+            } else {                
+                performer = TaskService.getUser(input);
+                break;     
             }
         }
 
         // Захардкожен создатель
-        try {
-            rs = UserDB.getOneFull("Kos");
-            if (rs.next()) {
-             autor = new User(rs.getInt("id"), rs.getString("nickname"));
-            } 
-         } catch (Exception e) {
-             System.out.println("Такого пользователя не существует.");
-         } 
+        performer = TaskService.getUser(input);
 
         Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, autor, performer);
-        boolean answer = TaskDB.add(newTask); // Вызываем сатичный метод добавления задачи
+        boolean answer = TaskService.add(newTask); // Вызываем сатичный метод добавления задачи
 
         if (answer) {
             message = "Задача успешно добавлена";
@@ -151,7 +130,7 @@ public class TaskUI extends BaseUI {
         System.out.println("1 - да; 2 - нет");
         input = scanner.next();
         if (input.equals("1")) {
-            if (TaskDB.delete(id)) {
+            if (TaskService.delete(id)) {
                 showMessage("Задача успешно удалена.");
             } else {
                 showMessage("Не удалось удалить задачу. Убедитесь в правильности введенного ID.");
@@ -162,7 +141,6 @@ public class TaskUI extends BaseUI {
 
     public static void showAll(TaskListSortColumns sortIn) {
         String listName = "";
-        User performer = null;
 
         switch (sortIn) {
             case DEADLINE -> {
@@ -189,22 +167,7 @@ public class TaskUI extends BaseUI {
 
         showMessage(listName);
 
-        ArrayList<Task> tasks = new ArrayList<>(); // Создаем списочный массив объектов Task
-        ResultSet rs = TaskDB.getAll(Main.sort); // создаем объет ResultSet и инициализируем его ответом из метода        
-
-            while (true) {
-                try {
-                    if (!rs.next()) {
-                        break;
-                    }
-                 // Пока есть записи создаем объеты в цикле
-                    performer = TaskService.getUser(rs.getInt("performer_id"));
-                    tasks.add(new Task(rs.getInt("id"), rs.getString("name"),
-                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), performer));
-                } catch (SQLException e) {
-                    showMessage("При выбранной сортировке задач нет.");
-                 }
-            }
+        ArrayList<Task> tasks = TaskService.getAll(Main.sort);
 
             int i = 1;
             for (Task task : tasks) {
@@ -236,13 +199,13 @@ public class TaskUI extends BaseUI {
     public static void setStatus(Task task) {
 
         if (task.getStatus().equals("not_completed")) {
-            if(TaskDB.setStatus(task, Util.TaskStatuses.COMPLETED)) {
+            if(TaskService.setStatus(task, Util.TaskStatuses.COMPLETED)) {
                 message = "Статус изменен на \"Завершена\"";
             } else {
                 message = "Статус не изменен.";
             }
         } else  if (task.getStatus().equals("completed")) {
-            if (TaskDB.setStatus(task, Util.TaskStatuses.NOT_COMPLETED)) {
+            if (TaskService.setStatus(task, Util.TaskStatuses.NOT_COMPLETED)) {
                 message = "Статус изменен на \"В работе\"";
             } else {
                 message = "Статус не изменен.";
@@ -267,7 +230,7 @@ public class TaskUI extends BaseUI {
 
         changedTask.setDeadline(deadline);
 
-        if (TaskDB.update(changedTask)) {
+        if (TaskService.update(changedTask)) {
             showMessage("Задача успешно изменена!");
         } else {
             showMessage("Задача не была изменена :(");

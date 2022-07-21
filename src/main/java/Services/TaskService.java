@@ -4,15 +4,48 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
+import ConsoleUI.Main;
+import ConsoleUI.UI.BaseUI;
 import ConsoleUI.UI.TaskUI;
 import DB.TaskDB;
 import DB.UserDB;
 import Entities.Task;
 import Entities.User;
 import Utils.Util;
+import Utils.Util.TaskListSortColumns;
+import Utils.Util.TaskStatuses;
 
 public class TaskService {
+
+    public static boolean add(Task newTask) {
+        return TaskDB.add(newTask);
+    }
+
+    public static boolean delete(int id) {
+        return TaskDB.delete(id);
+    }
+
+    public static ArrayList<Task> getAll(TaskListSortColumns sort) {
+        ArrayList<Task> tasks = new ArrayList<>(); // Создаем списочный массив объектов Task
+        ResultSet rs = TaskDB.getAll(Main.sort); // создаем объет ResultSet и инициализируем его ответом из метода        
+
+            while (true) {
+                try {
+                    if (!rs.next()) {
+                        break;
+                    }
+                 // Пока есть записи создаем объеты в цикле
+                    User performer = TaskService.getUser(rs.getInt("performer_id"));
+                    tasks.add(new Task(rs.getInt("id"), rs.getString("name"),
+                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), performer));
+                } catch (SQLException e) {
+                    BaseUI.showMessage("При выбранной сортировке задач нет.");
+                 }
+            }
+        return tasks;
+    }
 
     public static Task getOneFull(int id) {        
         User autor, performer = null;
@@ -40,10 +73,32 @@ public class TaskService {
         return task;
     }
 
+    public static boolean setStatus(Task task, TaskStatuses taskStatutes) {
+        return TaskDB.setStatus(task, taskStatutes);
+    }
+
+    public static boolean update(Task changedTask) {
+        return TaskDB.update(changedTask);
+    }
+
     public static User getUser(int id) {
     User user = null;
         try {
             ResultSet rs = UserDB.getOneFull(id);
+            if (rs.next()) {
+               user = new User(rs.getInt("id"), rs.getString("nickname")); 
+            } 
+        } catch (Exception e) {
+            System.out.println("Объект User не создан.");
+        }
+
+        return user;
+    }
+    
+    public static User getUser(String nickname) {
+    User user = null;
+        try {
+            ResultSet rs = UserDB.getOneFull(nickname);
             if (rs.next()) {
                user = new User(rs.getInt("id"), rs.getString("nickname")); 
             } 
