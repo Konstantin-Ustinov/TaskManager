@@ -107,7 +107,7 @@ public class TaskUI extends BaseUI {
         }
 
         // Захардкожен создатель
-        performer = UserService.getUser(input);
+        autor = UserService.getUser("Kos");
 
         Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, autor, performer);
         boolean answer = TaskService.add(newTask); // Вызываем сатичный метод добавления задачи

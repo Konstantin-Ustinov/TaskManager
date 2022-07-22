@@ -23,7 +23,7 @@ public class Task extends Base {
         this.deadLine = deadline;
     }
 
-    // Конструктор для вывода задач кратким список
+    // Конструктор для вывода задач кратким списоком
     public Task(int id, String name, String status, LocalDate deadline, User performer) {
         this(name, status, deadline);
         this.id = id;
@@ -99,8 +99,8 @@ public class Task extends Base {
 
     @Override
     public String toString() {
-        String performerNickname = (performer != null) ? getPerformerNickname() : "Не назначен";
-        String autorNickname = (autor != null) ? getAutorNickname() : "Не назначен";
+        String performerNickname = (performer != null && getPerformerNickname() != null) ? getPerformerNickname() : "Не назначен";
+        String autorNickname = (autor != null && getAutorNickname() != null) ? getAutorNickname() : "Не назначен";
 
         return "ID задачи: " + id +
                 "\nНазвание: " + name +
@@ -113,7 +113,7 @@ public class Task extends Base {
     }
 
     public String showShortTask() {
-        String performerNickname = (performer != null) ? getPerformerNickname() : "Не назначен";
+        String performerNickname = (performer != null && getPerformerNickname() != null) ? getPerformerNickname() : "Не назначен";
 
         return "ID задачи: " + id + "\nНазвание: " + name +
                 "; Завершить до: " + deadLine.format(formatter) +

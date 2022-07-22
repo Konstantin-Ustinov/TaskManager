@@ -87,11 +87,12 @@ public class TaskDB extends BaseDB {
     }
 
     public static ResultSet getOneFull(int taskId) {
-        String sql = "SELECT tasks.id as taskId, tasks.name as name, tasks.body as body, tasks.status as status, tasks.created_at as created," +
-                            " tasks.deadline as deadline , users.id as performerId, users.nickname as performerNickname FROM public.\"tasks\"" + 
-                            " INNER JOIN public.\"users\" ON tasks.performer_id = users.id WHERE tasks.id = " + taskId;/* + 
-                            "SELECT \"users.id\" as autorId, \"users.nickname\" as autorNickname FROM public.\"tasks\" INNER JOIN public.\"users\" ON" + 
-                            " \"tasks.autor_id\" = \"users.id\" WHERE \"tasks.id\" = " + taskId;*/
+        String sql = "SELECT task.id as task_id, task.name as task_name, task.body as task_body, task.status as task_status, task.created_at as task_created_at," +
+                            " task.deadline as task_deadline, performer.id as performer_id, performer.nickname as performer_nickname," +
+                            " autor.id as autor_id, autor.nickname as autor_nickname FROM public.\"tasks\" as task" + 
+                            " LEFT JOIN public.\"users\" as performer ON task.performer_id = performer.id LEFT JOIN public.\"users\" as autor" + 
+                            " ON task.autor_id = autor.id WHERE task.id = " + taskId;
+                            
 
         DBConnect();
 
@@ -106,7 +107,6 @@ public class TaskDB extends BaseDB {
          }
 
         DBDisconnect();
-        System.out.println(sql);
         return rs;
     }
 

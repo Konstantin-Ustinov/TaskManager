@@ -47,7 +47,7 @@ public class TaskService {
     }
 
     public static Task getOneFull(int id) {        
-        User autor, performer = null;
+        User autor = null, performer = null;
 
         // создаем объет ResultSet и инициализируем его ответом из метода
         ResultSet rs = TaskDB.getOneFull(id);
@@ -57,13 +57,13 @@ public class TaskService {
             if (!rs.next()) {
                 TaskUI.showMessage("Не удалось загрузить задачу. Убедитесь в правильности введенного ID.");
                 TaskUI.showOneFull(-1);
-            } else {
-                autor = new User(rs.getInt("autorId"), rs.getString("autorNickname"));
-                performer = new User(rs.getInt("performerId"), rs.getString("performerNickname"));
-                task = new Task(rs.getInt("taskId"), rs.getString("name"),
-                        rs.getString("body"), rs.getString("status"),
-                        LocalDateTime.parse(rs.getTimestamp("created").toString(), Util.formatterToLocalDateTime),
-                        LocalDate.parse(rs.getDate("deadline").toString()), autor, performer);             
+            } else {               
+                autor = new User(rs.getInt("autor_id"), rs.getString("autor_nickname"));
+                performer = new User(rs.getInt("performer_id"), rs.getString("performer_nickname"));
+                task = new Task(rs.getInt("task_id"), rs.getString("task_name"),
+                        rs.getString("task_body"), rs.getString("task_status"),
+                        LocalDateTime.parse(rs.getTimestamp("task_created_at").toString(), Util.formatterToLocalDateTime),
+                        LocalDate.parse(rs.getDate("task_deadline").toString()), autor, performer);             
             }
         } catch (SQLException e) {
             System.out.println("Объект task не создан.");
