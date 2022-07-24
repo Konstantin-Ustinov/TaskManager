@@ -84,7 +84,7 @@ public class UserUI extends BaseUI {
         
         nickname = enterNickname();
 
-        User user = UserService.getUser(nickname);
+        User user = UserService.getOneFull(nickname);
         
         System.out.println("Новый nickname?");
         
@@ -103,7 +103,7 @@ public class UserUI extends BaseUI {
    
     public static void showAll() {
 
-        ArrayList<User> users = UserService.getAll();
+        ArrayList<User> users = UserService.getAllByNickname();
         
         int num = 1;
 

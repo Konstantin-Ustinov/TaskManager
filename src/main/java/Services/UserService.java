@@ -20,7 +20,7 @@ public class UserService {
         return UserDB.update(user);
     }
 
-    public static User getUser(int id) {
+    public static User getOneFull(int id) {
         User user = null;
             try {
                 ResultSet rs = UserDB.getOneFull(id);
@@ -34,7 +34,7 @@ public class UserService {
             return user;
         }
         
-    public static User getUser(String nickname) {
+    public static User getOneFull(String nickname) {
         User user = null;
             try {
                 ResultSet rs = UserDB.getOneFull(nickname);
@@ -48,11 +48,11 @@ public class UserService {
             return user;
         }
 
-    public static ArrayList<User> getAll() {
+    public static ArrayList<User> getAllByNickname() {
         ArrayList<User> users = new ArrayList<>();
 
         try {
-            ResultSet rs = UserDB.getAll();
+            ResultSet rs = UserDB.getAllByNickname();
             if (!rs.next()) {
                 System.out.println("Пришел пустой ответ из базы.");
             }

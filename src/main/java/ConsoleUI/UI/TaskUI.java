@@ -62,7 +62,7 @@ public class TaskUI extends BaseUI {
         String taskBody;
         String taskStatus = "not_completed";
         String input;
-        LocalDateTime createDate = LocalDateTime.now();
+        LocalDateTime created_at = LocalDateTime.now();
         LocalDate deadline = null; // Ставим NULL чтобы запустить цикл по валидации ввода дедлайна
         User autor = null;
         User performer = null;
@@ -101,15 +101,15 @@ public class TaskUI extends BaseUI {
             if (taskBody.equals("")) {
                 System.out.println("Поле не может быть пустым");
             } else {                
-                performer = UserService.getUser(input);
+                performer = UserService.getOneFull(input);
                 break;     
             }
         }
 
         // Захардкожен создатель
-        autor = UserService.getUser("Kos");
+        autor = UserService.getOneFull("Kos");
 
-        Task newTask = new Task(taskName, taskBody, taskStatus, createDate, deadline, autor, performer);
+        Task newTask = new Task(taskName, taskBody, taskStatus, created_at, deadline, autor, performer);
         boolean answer = TaskService.add(newTask); // Вызываем сатичный метод добавления задачи
 
         if (answer) {
@@ -168,7 +168,7 @@ public class TaskUI extends BaseUI {
 
         showMessage(listName);
 
-        ArrayList<Task> tasks = TaskService.getAll(Main.sort);
+        ArrayList<Task> tasks = TaskService.getAllBySort(Main.sort);
 
             int i = 1;
             for (Task task : tasks) {

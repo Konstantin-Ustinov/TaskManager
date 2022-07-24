@@ -113,7 +113,7 @@ public class UserDB extends BaseDB {
         return rs;
     }
 
-    public static ResultSet getAll() {
+    public static ResultSet getAllByNickname() {
         DBConnect();
         
         String sql = "SELECT \"nickname\" FROM public.\"users\"";

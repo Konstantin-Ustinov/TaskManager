@@ -25,12 +25,12 @@ public class TaskDB extends BaseDB {
                         " \"performer_id\", \"autor_id\") VALUES(?, ?, ?, ?, ?, ?, ?, ?)"); // переменной присваиваем результат метода с запросом
                 stmt.setString(1, newTask.getName()); // подставляем значение переменной вместо первого знака вопроса
                 stmt.setString(2, newTask.getBody());
-                stmt.setTimestamp(3, Timestamp.valueOf(newTask.getCreateDate()));
+                stmt.setTimestamp(3, Timestamp.valueOf(newTask.getcreated_at()));
                 stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
                 stmt.setDate(5, Date.valueOf(newTask.getDeadLine()));
                 stmt.setString(6, newTask.getStatus());
-                stmt.setInt(7, newTask.getPerformerId());
-                stmt.setInt(8, newTask.getAutorId());
+                stmt.setInt(7, newTask.getPerformer().getId());
+                stmt.setInt(8, newTask.getAutor().getId());
                 stmt.execute(); // После того как весь запрос составлен, отправляем запрос в бвзу
                 return true;
             } catch (SQLException e) {
@@ -60,15 +60,17 @@ public class TaskDB extends BaseDB {
         return answer;
     }
 
-    public static ResultSet getAll(TaskListSortColumns sort) {
+    public static ResultSet getAllBySort(TaskListSortColumns sort) {
         ResultSet rs = null;
-        String sql = "SELECT \"id\", \"name\",  \"status\", \"deadline\", \"performer_id\" FROM public.\"tasks\"";
+        String sql = "SELECT task.id as task_id, task.name as task_name,  task.status as task_status, task.deadline as task_deadline," + 
+                        " performer.nickname as performer_nickname FROM public.\"tasks\" as task LEFT JOIN public.\"users\"" +
+                        " as performer ON task.performer_id = performer.id";
         switch (sort) {
-            case DEADLINE -> sql += " WHERE \"deadline\" >= '" + Date.valueOf(LocalDate.now()) + "' ORDER BY \"deadline\", \"id\"";
-            case CREATE -> sql += "WHERE \"deadline\" >= '" + Date.valueOf(LocalDate.now()) +  "' ORDER BY \"created_at\", \"id\"";
-            case COMPLETED -> sql += " WHERE \"status\" = 'completed' AND \"deadline\" >= '" + Date.valueOf(LocalDate.now()) + "'";
-            case NOT_COMPLETED -> sql += " WHERE \"status\" = 'not_completed' AND \"deadline\" >= '" + Date.valueOf(LocalDate.now()) + "'";
-            case OVERDUE -> sql += " WHERE \"deadline\" < '" + Date.valueOf(LocalDate.now()) + "' ORDER BY \"deadline\", \"id\"";
+            case DEADLINE -> sql += " WHERE task.deadline >= '" + Date.valueOf(LocalDate.now()) + "' ORDER BY task.deadline, task.id";
+            case CREATE -> sql += "WHERE task.deadline >= '" + Date.valueOf(LocalDate.now()) +  "' ORDER BY task.created_at, task.id";
+            case COMPLETED -> sql += " WHERE task.status = 'completed' AND task.deadline >= '" + Date.valueOf(LocalDate.now()) + "'";
+            case NOT_COMPLETED -> sql += " WHERE task.status = 'not_completed' AND task.deadline >= '" + Date.valueOf(LocalDate.now()) + "'";
+            case OVERDUE -> sql += " WHERE task.deadline < '" + Date.valueOf(LocalDate.now()) + "' ORDER BY task.deadline, task.id";
         }
 
         DBConnect();
@@ -79,6 +81,7 @@ public class TaskDB extends BaseDB {
             stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
         } catch (SQLException e) {
+            System.out.println(sql);
             System.out.println("Не удалось загрузить задачи. Ошибка запроса.");
         }
 

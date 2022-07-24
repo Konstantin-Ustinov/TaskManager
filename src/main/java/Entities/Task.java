@@ -11,7 +11,7 @@ public class Task extends Base {
     private String name;
     private String body;
     private String status;
-    private LocalDateTime createDate;
+    private LocalDateTime created_at;
     private LocalDate deadLine;
     private User autor;
     private User performer;
@@ -31,17 +31,17 @@ public class Task extends Base {
     }
 
     // Конструктор для добавления задачи в базу
-    public Task(String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User autor, User performer) {
+    public Task(String name, String body, String status, LocalDateTime created_at, LocalDate deadline, User autor, User performer) {
         this(name, status, deadline);
         this.body = body;
-        this.createDate = createDate;
+        this.created_at = created_at;
         this.autor = autor;
         this.performer = performer;
     }
 
     // Конструктор для всех полей задачи
-    public Task(int id, String name, String body, String status, LocalDateTime createDate, LocalDate deadline, User autor, User performer) {
-        this(name, body, status, createDate, deadline, autor, performer);
+    public Task(int id, String name, String body, String status, LocalDateTime created_at, LocalDate deadline, User autor, User performer) {
+        this(name, body, status, created_at, deadline, autor, performer);
         this.id = id;
     }
 
@@ -61,28 +61,20 @@ public class Task extends Base {
         return this.status;
     }
 
-    public LocalDateTime getCreateDate() {
-        return this.createDate;
+    public LocalDateTime getcreated_at() {
+        return this.created_at;
     }
 
     public LocalDate getDeadLine() {
         return this.deadLine;
     }
 
-    public String getAutorNickname() {
-        return this.autor.getNickname();
-    }
-
-    public String getPerformerNickname() {
-        return this.performer.getNickname();
+    public User getAutor() {
+        return this.autor;
     } 
 
-    public int getAutorId() {
-        return this.autor.getId();
-    }
-
-    public int getPerformerId() {
-        return this.performer.getId();
+    public User getPerformer() {
+        return this.performer;
     }
 
     public void setName(String name) {
@@ -99,13 +91,13 @@ public class Task extends Base {
 
     @Override
     public String toString() {
-        String performerNickname = (performer != null && getPerformerNickname() != null) ? getPerformerNickname() : "Не назначен";
-        String autorNickname = (autor != null && getAutorNickname() != null) ? getAutorNickname() : "Не назначен";
+        String performerNickname = (performer != null && getPerformer().getNickname() != null) ? getPerformer().getNickname() : "Не назначен";
+        String autorNickname = (autor != null && getAutor().getNickname() != null) ? getAutor().getNickname() : "Не назначен";
 
         return "ID задачи: " + id +
                 "\nНазвание: " + name +
                 "\nОписание: " + body +
-                "\nДата создания: " + createDate.atZone(ZoneId.systemDefault()).format(formatter) +
+                "\nДата создания: " + created_at.atZone(ZoneId.systemDefault()).format(formatter) +
                 "\nЗавершить до: " + deadLine.format(formatter) +
                 "\nСтатус: " + translateStatus() +
                 "\nСоздатель: " + autorNickname + 
@@ -113,7 +105,7 @@ public class Task extends Base {
     }
 
     public String showShortTask() {
-        String performerNickname = (performer != null && getPerformerNickname() != null) ? getPerformerNickname() : "Не назначен";
+        String performerNickname = (performer != null && getPerformer().getNickname() != null) ? getPerformer().getNickname() : "Не назначен";
 
         return "ID задачи: " + id + "\nНазвание: " + name +
                 "; Завершить до: " + deadLine.format(formatter) +

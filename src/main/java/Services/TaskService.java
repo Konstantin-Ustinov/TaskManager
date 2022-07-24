@@ -26,9 +26,9 @@ public class TaskService {
         return TaskDB.delete(id);
     }
 
-    public static ArrayList<Task> getAll(TaskListSortColumns sort) {
+    public static ArrayList<Task> getAllBySort(TaskListSortColumns sort) {
         ArrayList<Task> tasks = new ArrayList<>(); // Создаем списочный массив объектов Task
-        ResultSet rs = TaskDB.getAll(Main.sort); // создаем объет ResultSet и инициализируем его ответом из метода        
+        ResultSet rs = TaskDB.getAllBySort(Main.sort); // создаем объет ResultSet и инициализируем его ответом из метода        
 
             while (true) {
                 try {
@@ -36,9 +36,9 @@ public class TaskService {
                         break;
                     }
                  // Пока есть записи создаем объеты в цикле
-                    User performer = UserService.getUser(rs.getInt("performer_id"));
-                    tasks.add(new Task(rs.getInt("id"), rs.getString("name"),
-                            rs.getString("status"), LocalDate.parse(rs.getDate("deadline").toString()), performer));
+                    User performer = new User(rs.getString("performer_nickname"));
+                    tasks.add(new Task(rs.getInt("task_id"), rs.getString("task_name"),
+                            rs.getString("task_status"), LocalDate.parse(rs.getDate("task_deadline").toString()), performer));
                 } catch (SQLException e) {
                     BaseUI.showMessage("При выбранной сортировке задач нет.");
                  }
