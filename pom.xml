@@ -8,6 +8,8 @@
   <artifactId>tm-app</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <packaging>war</packaging>
+
   <name>tm-app</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
@@ -37,6 +39,21 @@
       <artifactId>javalite-common</artifactId>
       <version>3.1-j11</version>
   </dependency>
+  <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+        <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.9.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -65,6 +82,16 @@
           <version>3.0.2</version>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <executions>
+              <execution>
+                  <id>default-war</id>
+              </execution>
+          </executions>
+          <version>3.3.2</version>
+      </plugin>
+        <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <version>2.5.2</version>
         </plugin>
@@ -85,6 +112,9 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
           <version>11.0.11</version>
+          <configuration>
+          <scanIntervalSeconds>2</scanIntervalSeconds>
+        </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
