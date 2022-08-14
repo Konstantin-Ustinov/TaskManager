@@ -2,6 +2,9 @@ package Entities;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+@JsonFilter("filterMark")
 public class Base {
 
     int id;

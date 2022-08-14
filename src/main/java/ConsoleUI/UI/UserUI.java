@@ -103,7 +103,7 @@ public class UserUI extends BaseUI {
    
     public static void showAll() {
 
-        ArrayList<User> users = UserService.getAllByNickname();
+        ArrayList<User> users = UserService.getAll();
         
         int num = 1;
 

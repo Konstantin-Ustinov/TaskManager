@@ -113,10 +113,15 @@ public class UserDB extends BaseDB {
         return rs;
     }
 
-    public static ResultSet getAllByNickname() {
-        DBConnect();
+    public static ResultSet getAll(String field, String order) {
         
-        String sql = "SELECT \"nickname\" FROM public.\"users\"";
+        if (!order.equals("ASC") && !order.equals("DESC")) {
+            order = "ASC";
+        }
+
+        String sql = "SELECT id, nickname FROM public.\"users\" ORDER BY " + field + " " + order;
+        
+        DBConnect();
         Statement stmt = null;
         ResultSet rs = null;
 
@@ -131,6 +136,7 @@ public class UserDB extends BaseDB {
         
         return rs;
     }
+
 }
 
 
